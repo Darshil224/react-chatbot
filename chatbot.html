@@ -2,6 +2,12 @@
 <html>
   <head>
     <title>Chatbot</title>
+    <!-- <style>
+      .send-button {
+        background-color: green;
+      }
+    </style> -->
+    <link rel="stylesheet" href="chatbot.css" />
   </head>
   <body>
     <div class="js-container"></div>
@@ -47,7 +53,7 @@
           setInputText("");
         }
         return (
-          <>
+          <div className="chat-input-container">
             {/* This is a JSX comment */}
             {/* JSX is more stricter. So we always have to use cloasing tags as well unlike html... also <input /> is shortcut for <input></input>, if there is nothing to write inside that imput tag*/}
             <input
@@ -55,9 +61,12 @@
               size="30"
               onChange={saveInputText}
               value={inputText}
+              className="chat-input"
             ></input>
-            <button onClick={sendMessage}>Send</button>
-          </>
+            <button onClick={sendMessage} className="send-button">
+              Send
+            </button>
+          </div>
         );
       }
       function ChatMessage(props) {
@@ -66,18 +75,19 @@
         const { message, sender } = props; //destructuring shortcut
         if (sender === "robot") {
           return (
-            <div>
-              <img src="icons/robot.png" width="50" />
-              {message}
+            <div className="chat-message-robot">
+              <img src="icons/robot.png" className="chat-message-profile" />
+              <div className="chat-message-text">{message}</div>
             </div>
           );
         }
 
         //here using div to group elements because div is a block element and we want the message to take up entire line.
         return (
-          <div>
-            {message}
-            <img src="icons/user.png" width="50"></img>
+          <div className="chat-message-user">
+            <div className="chat-message-text">{message}</div>
+
+            <img src="icons/user.png" className="chat-message-profile"></img>
           </div>
         );
       }
@@ -171,7 +181,7 @@
 
         //Step2: Generate the HTML using JS:
         return (
-          <>
+          <div className="chat-messages-container">
             {/*<button onClick={sendMessage}>Send Message</button>*/}
             {chatMessages.map((singleChatMessage) => {
               return (
@@ -182,7 +192,7 @@
                 />
               );
             })}
-          </>
+          </div>
         );
       }
 
@@ -281,16 +291,7 @@
           React.useState(initialChatMessages); //Array destructuring
 
         return (
-          <>
-            {/*{ChatInput()}*/}
-            {/*<ChatInput></ChatInput>*/}
-            {/*called COMPONENT SYNTAX; creating our own HTML element*/}
-            {/* This works same as above line :-  {ChatInput()} */}
-            <ChatInput
-              chatMessages={chatMessages}
-              setChatMessages={setChatMessages}
-            />
-            {/* <ChatInput /> is Shortcut for <ChatInput></ChatInput>, only if nothing in between*/}
+          <div className="app-container">
             {/*<ChatMessage message="hello chatbot" sender="user" />
             <ChatMessage message="Hello! How can I help you?" sender="robot" />
             <ChatMessage message="todays date?" sender="user" />
@@ -313,7 +314,16 @@
             })}*/}
 
             <ChatMessages chatMessages={chatMessages} />
-          </>
+            {/*{ChatInput()}*/}
+            {/*<ChatInput></ChatInput>*/}
+            {/*called COMPONENT SYNTAX; creating our own HTML element*/}
+            {/* This works same as above line :-  {ChatInput()} */}
+            <ChatInput
+              chatMessages={chatMessages}
+              setChatMessages={setChatMessages}
+            />
+            {/* <ChatInput /> is Shortcut for <ChatInput></ChatInput>, only if nothing in between*/}
+          </div>
         );
       }
 
