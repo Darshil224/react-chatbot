@@ -206,6 +206,25 @@
         );
       }
 
+      //component to display the welcome message if the chatmessages is empty
+      function WelcomeMessage({ chatMessages }) {
+        if (chatMessages.length === 0) {
+          return (
+            <div className="welcome-message-container">
+              <div className="welcome-message">
+                👋 <strong>Welcome to the React Chatbot!</strong>
+                <br />
+                <br />
+                Start a conversation by typing a message below. You can ask
+                about the current date, say hello, or simply explore how this
+                chatbot works while I learn React.
+              </div>
+            </div>
+          );
+        }
+        return null;
+      }
+
       //storing the generated html of the Components:-
       function App() {
         /*
@@ -260,6 +279,8 @@
         */
 
         const initialChatMessages = [
+          /*
+          //removing the default chat messages that we saved as data
           {
             message: "hello chatbot",
             sender: "user",
@@ -291,6 +312,7 @@
             sender: "robot",
             id: "id6",
           },
+          */
         ];
         /*
         const array = React.useState(initialChatMessages); 
@@ -322,6 +344,8 @@
                 />
               );
             })}*/}
+
+            <WelcomeMessage chatMessages={chatMessages} />
 
             <ChatMessages chatMessages={chatMessages} />
             {/*{ChatInput()}*/}
