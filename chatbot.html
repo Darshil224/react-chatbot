@@ -115,6 +115,16 @@
 
       //creating a ChatMessages component and shifting the App components code related to ChatMessages in this (just to make our code cleaner):-
       function ChatMessages({ chatMessages }) {
+        const chatMessagesRef = React.useRef(null);
+
+        React.useEffect(() => {
+          // console.log(chatMessagesRef.current);
+          const containerElem = chatMessagesRef.current;
+          if (containerElem) {
+            containerElem.scrollTop = containerElem.scrollHeight;
+          }
+        }, [chatMessages]);
+
         // //Removing this code from here, because we are "moving the 'chatMessages' state up to 'App' component" :-
         // const initialChatMessages = [
         //   {
@@ -181,7 +191,7 @@
 
         //Step2: Generate the HTML using JS:
         return (
-          <div className="chat-messages-container">
+          <div className="chat-messages-container" ref={chatMessagesRef}>
             {/*<button onClick={sendMessage}>Send Message</button>*/}
             {chatMessages.map((singleChatMessage) => {
               return (
