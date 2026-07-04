@@ -1,0 +1,324 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Chatbot</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+      function ChatInput({ chatMessages, setChatMessages }) {
+        const [inputText, setInputText] = React.useState("");
+
+        function saveInputText(event) {
+          setInputText(event.target.value);
+        }
+        function sendMessage() {
+          // console.log(inputText);
+
+          const newChatMessages = [
+            ...chatMessages,
+            {
+              message: inputText,
+              sender: "user",
+              id: crypto.randomUUID(),
+            },
+          ];
+          setChatMessages(newChatMessages);
+
+          //using chatbot.js external library to get a response from chatbot:
+          const response = Chatbot.getResponse(inputText);
+          // console.log(response);
+          setChatMessages([
+            ...newChatMessages,
+            {
+              message: response,
+              sender: "robot",
+              id: crypto.randomUUID(),
+            },
+          ]);
+
+          setInputText("");
+        }
+        return (
+          <>
+            {/* This is a JSX comment */}
+            {/* JSX is more stricter. So we always have to use cloasing tags as well unlike html... also <input /> is shortcut for <input></input>, if there is nothing to write inside that imput tag*/}
+            <input
+              placeholder="Send a message to Chatbot"
+              size="30"
+              onChange={saveInputText}
+              value={inputText}
+            ></input>
+            <button onClick={sendMessage}>Send</button>
+          </>
+        );
+      }
+      function ChatMessage(props) {
+        //const message = props.message;
+        //const sender = props.sender;
+        const { message, sender } = props; //destructuring shortcut
+        if (sender === "robot") {
+          return (
+            <div>
+              <img src="icons/robot.png" width="50" />
+              {message}
+            </div>
+          );
+        }
+
+        //here using div to group elements because div is a block element and we want the message to take up entire line.
+        return (
+          <div>
+            {message}
+            <img src="icons/user.png" width="50"></img>
+          </div>
+        );
+      }
+
+      // //storing the generated html of the Components:-
+      // const app = (
+      //   <>
+      //     {/*{ChatInput()}*/}
+      //     {/*<ChatInput></ChatInput>*/}
+      //     {/*called COMPONENT SYNTAX; creating our own HTML element*/}
+      //     {/* This works same as above line :-  {ChatInput()} */}
+      //     <ChatInput />
+      //     {/* <ChatInput /> is Shortcut for <ChatInput></ChatInput>, only if nothing in between*/}
+      //     <ChatMessage message="hello chatbot" sender="user" />
+      //     <ChatMessage message="Hello! How can I help you?" sender="robot" />
+      //     <ChatMessage message="todays date?" sender="user" />
+      //     <ChatMessage message="Today is June 30" sender="robot" />
+      //     <ChatMessage message="thanks" sender="user" />
+      //     <ChatMessage
+      //       message="No problem! Let me know if you need help with anything else!"
+      //       sender="robot"
+      //     />
+      //   </>
+      // );
+
+      //creating a ChatMessages component and shifting the App components code related to ChatMessages in this (just to make our code cleaner):-
+      function ChatMessages({ chatMessages }) {
+        // //Removing this code from here, because we are "moving the 'chatMessages' state up to 'App' component" :-
+        // const initialChatMessages = [
+        //   {
+        //     message: "hello chatbot",
+        //     sender: "user",
+        //     id: "id1",
+        //   },
+        //   {
+        //     message: "Hello! How can I help you?",
+        //     sender: "robot",
+        //     id: "id2",
+        //   },
+        //   {
+        //     message: "todays date?",
+        //     sender: "user",
+        //     id: "id3",
+        //   },
+        //   {
+        //     message: "Today is June 30",
+        //     sender: "robot",
+        //     id: "id4",
+        //   },
+        //   {
+        //     message: "thanks",
+        //     sender: "user",
+        //     id: "id5",
+        //   },
+        //   {
+        //     message:
+        //       "No problem! Let me know if you need help with anything else!",
+        //     sender: "robot",
+        //     id: "id6",
+        //   },
+        // ];
+        // /*
+        // const array = React.useState(initialChatMessages);
+        // const chatMessages = array[0]; //contains the initial value of the "initialChatMessages"/ most current "initialChatMessages" value.
+        // const setChatMessages = array[1]; //updater function
+        // */
+
+        // const [chatMessages, setChatMessages] =
+        //   React.useState(initialChatMessages); //Array destructuring
+
+        //removing bcz it was only for practise, now we dont neeed anymore the "send message" button and its heper function.
+        // function sendMessage() {
+        //   // chatMessages.push({
+        //   //   message: "test",
+        //   //   sender: "user",
+        //   //   // id: 'id7'
+        //   //   id: crypto.randomUUID(), //js code to generate a unique id, everytime
+        //   // });
+        //   // console.log(chatMessages);
+
+        //   //using the updater function to update, so that the react will regenerate the html too:
+        //   setChatMessages([
+        //     ...chatMessages,
+        //     {
+        //       message: "test",
+        //       sender: "user",
+        //       id: crypto.randomUUID(),
+        //     },
+        //   ]);
+        // }
+
+        //Step2: Generate the HTML using JS:
+        return (
+          <>
+            {/*<button onClick={sendMessage}>Send Message</button>*/}
+            {chatMessages.map((singleChatMessage) => {
+              return (
+                <ChatMessage
+                  message={singleChatMessage.message}
+                  sender={singleChatMessage.sender}
+                  key={singleChatMessage.id}
+                />
+              );
+            })}
+          </>
+        );
+      }
+
+      //storing the generated html of the Components:-
+      function App() {
+        /*
+        //transfered all the ChatMessages related code below to its own component above, to make code cleaner, hence commenting out the code.
+        //using js to generate ChatMessage components:= Steps: 1) Save the data 2) generate the html
+
+        //step1: saving the data:
+        const chatMessages = [
+          {
+            message: "hello chatbot",
+            sender: "user",
+            id: "id1",
+          },
+          {
+            message: "Hello! How can I help you?",
+            sender: "robot",
+            id: "id2",
+          },
+          {
+            message: "todays date?",
+            sender: "user",
+            id: "id3",
+          },
+          {
+            message: "Today is June 30",
+            sender: "robot",
+            id: "id4",
+          },
+          {
+            message: "thanks",
+            sender: "user",
+            id: "id5",
+          },
+          {
+            message:
+              "No problem! Let me know if you need help with anything else!",
+            sender: "robot",
+            id: "id6",
+          },
+        ];
+        /*
+        //Step2: Generate the HTML using JS:
+        //commenting out, because inserting this code of loop diectly in the jsx in inside return statement , instead of first storing in variable here and the using that.
+        const ChatMessageComponents = chatMessages.map((singleChatMessage) => {
+          return (
+            <ChatMessage
+              message={singleChatMessage.message}
+              sender={singleChatMessage.sender}
+            />
+          );
+        });
+        */
+
+        const initialChatMessages = [
+          {
+            message: "hello chatbot",
+            sender: "user",
+            id: "id1",
+          },
+          {
+            message: "Hello! How can I help you?",
+            sender: "robot",
+            id: "id2",
+          },
+          {
+            message: "todays date?",
+            sender: "user",
+            id: "id3",
+          },
+          {
+            message: "Today is June 30",
+            sender: "robot",
+            id: "id4",
+          },
+          {
+            message: "thanks",
+            sender: "user",
+            id: "id5",
+          },
+          {
+            message:
+              "No problem! Let me know if you need help with anything else!",
+            sender: "robot",
+            id: "id6",
+          },
+        ];
+        /*
+        const array = React.useState(initialChatMessages); 
+        const chatMessages = array[0]; //contains the initial value of the "initialChatMessages"/ most current "initialChatMessages" value.
+        const setChatMessages = array[1]; //updater function
+        */
+        const [chatMessages, setChatMessages] =
+          React.useState(initialChatMessages); //Array destructuring
+
+        return (
+          <>
+            {/*{ChatInput()}*/}
+            {/*<ChatInput></ChatInput>*/}
+            {/*called COMPONENT SYNTAX; creating our own HTML element*/}
+            {/* This works same as above line :-  {ChatInput()} */}
+            <ChatInput
+              chatMessages={chatMessages}
+              setChatMessages={setChatMessages}
+            />
+            {/* <ChatInput /> is Shortcut for <ChatInput></ChatInput>, only if nothing in between*/}
+            {/*<ChatMessage message="hello chatbot" sender="user" />
+            <ChatMessage message="Hello! How can I help you?" sender="robot" />
+            <ChatMessage message="todays date?" sender="user" />
+            <ChatMessage message="Today is June 30" sender="robot" />
+            <ChatMessage message="thanks" sender="user" />
+            <ChatMessage
+              message="No problem! Let me know if you need help with anything else!"
+              sender="robot"
+            />*/}
+
+            {/*{ChatMessageComponents}*/}
+            {/*{chatMessages.map((singleChatMessage) => {
+              return (
+                <ChatMessage
+                  message={singleChatMessage.message}
+                  sender={singleChatMessage.sender}
+                  key={singleChatMessage.id}
+                />
+              );
+            })}*/}
+
+            <ChatMessages chatMessages={chatMessages} />
+          </>
+        );
+      }
+
+      const container = document.querySelector(".js-container");
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>
